@@ -11,4 +11,12 @@ class SpreadSheet:
         return self._cells.get(cell, '')
 
     def evaluate(self, cell: str) -> int | str:
-        pass
+        content = self.get(cell)
+        try:
+            return int(content)
+        except ValueError:
+            pass
+        if content.startswith("'") and content.endswith("'") and len(content) > 1:
+            return content[1:-1]
+
+        return "#Error"
