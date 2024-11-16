@@ -121,3 +121,21 @@ class TestSpreadSheet(TestCase):
         self.spreadsheet.set('A1', "='Hello'&' World")
         result = self.spreadsheet.evaluate('A1')
         self.assertEqual(result, "#Error")
+        
+    def test_string_concatenation_with_references(self):
+        self.spreadsheet.set('A1', "='Hello'&B1")
+        self.spreadsheet.set('B1', "' World'")
+        result = self.spreadsheet.evaluate('A1')
+        self.assertEqual(result, "Hello World")
+
+    def test_invalid_string_concatenation_with_references(self):
+        self.spreadsheet.set('A1', "='Hello'&B1")
+        self.spreadsheet.set('B1', " World")
+        result = self.spreadsheet.evaluate('A1')
+        self.assertEqual(result, "#Error")
+
+    def test_circular_reference_in_concatenation(self):
+        self.spreadsheet.set('A1', "='Hello'&B1")
+        self.spreadsheet.set('B1', "=A1")
+        result = self.spreadsheet.evaluate('A1')
+        self.assertEqual(result, "#Circular")

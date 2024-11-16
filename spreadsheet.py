@@ -1,5 +1,3 @@
-import re
-
 class SpreadSheet:
 
     def __init__(self):
@@ -20,15 +18,20 @@ class SpreadSheet:
         if '&' in content:
             parts = content.split('&')
             if len(parts) == 2:
-                # Remove leading and trailing spaces
                 left, right = parts[0].strip(), parts[1].strip()
-
-                # Check if both parts are valid strings enclosed in single quotes
-                if left.startswith("'") and left.endswith("'") and right.startswith("'") and right.endswith("'"):
-                    # Remove the quotes and concatenate
-                    return left[1:-1] + right[1:-1]
+                if left.startswith("'") and left.endswith("'"):
+                    left_result = left[1:-1]
                 else:
+                    left_result = self.evaluate(left[1:] if left.startswith("=") else left)
+
+                if right.startswith("'") and right.endswith("'"):
+                    right_result = right[1:-1]
+                else:
+                    right_result = self.evaluate(right[1:] if right.startswith("=") else right)
+                if left_result == "#Error" or right_result == "#Error":
                     return "#Error"
+
+                return left_result + right_result
                 
         if content.startswith("="):
             ref_cell = content[1:]
@@ -47,5 +50,3 @@ class SpreadSheet:
                 return "#Error"
         except (ZeroDivisionError, ValueError, SyntaxError):
             return "#Error"
-
-        return "#Error"
