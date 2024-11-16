@@ -139,3 +139,18 @@ class TestSpreadSheet(TestCase):
         self.spreadsheet.set('B1', "=A1")
         result = self.spreadsheet.evaluate('A1')
         self.assertEqual(result, "#Circular")
+        
+    def test_formula_with_parentheses(self):
+        self.spreadsheet.set('A1', "=2*(1+2)")
+        result = self.spreadsheet.evaluate('A1')
+        self.assertEqual(result, 6)
+
+    def test_formula_with_parentheses_and_whitespace(self):
+        self.spreadsheet.set('A1', "= 2 * ( 1 + 2 )")
+        result = self.spreadsheet.evaluate('A1')
+        self.assertEqual(result, 6)
+
+    def test_unbalanced_parentheses(self):
+        self.spreadsheet.set('A1', "=2*(1+2")
+        result = self.spreadsheet.evaluate('A1')
+        self.assertEqual(result, "#Error")

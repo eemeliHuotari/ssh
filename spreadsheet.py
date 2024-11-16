@@ -15,6 +15,33 @@ class SpreadSheet:
         if cell in self._evaluating:
             return "#Circular"
         
+        content = content.replace(" ", "")
+        if content.startswith("="):
+            content = content[1:]
+
+        if "(" in content:
+            open_count = 0
+            for char in enumerate(content):
+                if char == "(":
+                    open_count += 1
+                elif char == ")":
+                    open_count -= 1
+                if open_count < 0:
+                    return "#Error"
+
+            if open_count != 0:
+                return "#Error"
+            start_idx = content.find("(")
+            while start_idx != -1:
+                end_idx = content.find(")", start_idx)
+                if end_idx == -1:
+                    return "#Error"
+                inner_expr = content[start_idx + 1:end_idx]
+                result = self.evaluate(inner_expr)
+                if result == "#Error":
+                    return "#Error"
+                content = content[:start_idx] + str(result) + content[end_idx + 1:]
+                start_idx = content.find("(")
         if '&' in content:
             parts = content.split('&')
             if len(parts) == 2:
