@@ -16,23 +16,20 @@ class SpreadSheet:
         content = self.get(cell)
         if cell in self._evaluating:
             return "#Circular"
-        try:
-            return int(content)
-        except ValueError:
-            pass
-
-        if content.startswith("'") and content.endswith("'") and len(content) > 1:
-            return content[1:-1]
         
-        if content.startswith("="):
-            formula_content = content[1:]
-            try:
-                return int(formula_content)
-            except ValueError:
-                if formula_content.startswith("'") and formula_content.endswith("'") and len(formula_content) > 1:
-                    return formula_content[1:-1]
+        if '&' in content:
+            parts = content.split('&')
+            if len(parts) == 2:
+                # Remove leading and trailing spaces
+                left, right = parts[0].strip(), parts[1].strip()
+
+                # Check if both parts are valid strings enclosed in single quotes
+                if left.startswith("'") and left.endswith("'") and right.startswith("'") and right.endswith("'"):
+                    # Remove the quotes and concatenate
+                    return left[1:-1] + right[1:-1]
                 else:
                     return "#Error"
+                
         if content.startswith("="):
             ref_cell = content[1:]
             if ref_cell in self._cells:

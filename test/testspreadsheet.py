@@ -111,3 +111,13 @@ class TestSpreadSheet(TestCase):
         self.spreadsheet.set('B1', "=A1")
         result = self.spreadsheet.evaluate('A1')
         self.assertEqual(result, "#Circular")
+        
+    def test_string_concatenation(self):
+        self.spreadsheet.set('A1', "='Hello'&' World'")
+        result = self.spreadsheet.evaluate('A1')
+        self.assertEqual(result, "Hello World")
+
+    def test_invalid_string_concatenation(self):
+        self.spreadsheet.set('A1', "='Hello'&' World")
+        result = self.spreadsheet.evaluate('A1')
+        self.assertEqual(result, "#Error")
