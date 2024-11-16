@@ -93,3 +93,21 @@ class TestSpreadSheet(TestCase):
         self.spreadsheet.set('A1', "=10%3")
         result = self.spreadsheet.evaluate('A1')
         self.assertEqual(result, 1)
+         
+    def test_arithmetic_with_reference(self):
+        self.spreadsheet.set('A1', "=1+B1")
+        self.spreadsheet.set('B1', "3")
+        result = self.spreadsheet.evaluate('A1')
+        self.assertEqual(result, 4)
+
+    def test_arithmetic_with_invalid_reference(self):
+        self.spreadsheet.set('A1', "=1+B1")
+        self.spreadsheet.set('B1', "3.1")
+        result = self.spreadsheet.evaluate('A1')
+        self.assertEqual(result, "#Error")
+
+    def test_circular_reference(self):
+        self.spreadsheet.set('A1', "=B1")
+        self.spreadsheet.set('B1', "=A1")
+        result = self.spreadsheet.evaluate('A1')
+        self.assertEqual(result, "#Circular")

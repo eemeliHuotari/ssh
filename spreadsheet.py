@@ -20,8 +20,10 @@ class SpreadSheet:
             return int(content)
         except ValueError:
             pass
+
         if content.startswith("'") and content.endswith("'") and len(content) > 1:
             return content[1:-1]
+        
         if content.startswith("="):
             formula_content = content[1:]
             try:
@@ -40,12 +42,13 @@ class SpreadSheet:
                 return result
             else:
                 return "#Error"
-
         try:
             result = eval(content)
-            if isinstance(result, int):  # Only allow integer results
+            if isinstance(result, int):
                 return result
             else:
                 return "#Error"
         except (ZeroDivisionError, ValueError, SyntaxError):
             return "#Error"
+
+        return "#Error"
