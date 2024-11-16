@@ -51,3 +51,20 @@ class TestSpreadSheet(TestCase):
         self.spreadsheet.set('A1', "='Apple")
         result = self.spreadsheet.evaluate('A1')
         self.assertEqual(result, "#Error")
+        
+    def test_simple_reference(self):
+        self.spreadsheet.set('A1', "=B1")
+        self.spreadsheet.set('B1', "42")
+        result = self.spreadsheet.evaluate('A1')
+        self.assertEqual(result, 42)
+
+    def test_invalid_reference(self):
+        self.spreadsheet.set('A1', "=B1")
+        result = self.spreadsheet.evaluate('A1')
+        self.assertEqual(result, "#Error")
+
+    def test_circular_reference(self):
+        self.spreadsheet.set('A1', "=B1")
+        self.spreadsheet.set('B1', "=A1")
+        result = self.spreadsheet.evaluate('A1')
+        self.assertEqual(result, "#Circular")

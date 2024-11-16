@@ -12,6 +12,8 @@ class SpreadSheet:
 
     def evaluate(self, cell: str) -> int | str:
         content = self.get(cell)
+        if cell in self._evaluating:
+            return "#Circular"
         try:
             return int(content)
         except ValueError:
@@ -27,4 +29,14 @@ class SpreadSheet:
                     return formula_content[1:-1]
                 else:
                     return "#Error"
+        if content.startswith("="):
+            ref_cell = content[1:]
+            if ref_cell in self._cells:
+                self._evaluating.add(cell)
+                result = self.evaluate(ref_cell)
+                self._evaluating.remove(cell)
+                return result
+            else:
+                return "#Error"
+
         return "#Error"
