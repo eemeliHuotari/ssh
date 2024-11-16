@@ -68,3 +68,28 @@ class TestSpreadSheet(TestCase):
         self.spreadsheet.set('B1', "=A1")
         result = self.spreadsheet.evaluate('A1')
         self.assertEqual(result, "#Circular")
+        
+    def test_arithmetic_addition(self):
+        self.spreadsheet.set('A1', "=1+3")
+        result = self.spreadsheet.evaluate('A1')
+        self.assertEqual(result, 4)
+
+    def test_arithmetic_multiplication_precedence(self):
+        self.spreadsheet.set('A1', "=1+3*2")
+        result = self.spreadsheet.evaluate('A1')
+        self.assertEqual(result, 7)
+
+    def test_arithmetic_error_non_integer(self):
+        self.spreadsheet.set('A1', "=1+3.5")
+        result = self.spreadsheet.evaluate('A1')
+        self.assertEqual(result, "#Error")
+
+    def test_arithmetic_error_division_by_zero(self):
+        self.spreadsheet.set('A1', "=1/0")
+        result = self.spreadsheet.evaluate('A1')
+        self.assertEqual(result, "#Error")
+
+    def test_arithmetic_modulus(self):
+        self.spreadsheet.set('A1', "=10%3")
+        result = self.spreadsheet.evaluate('A1')
+        self.assertEqual(result, 1)

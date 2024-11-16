@@ -1,3 +1,5 @@
+import re
+
 class SpreadSheet:
 
     def __init__(self):
@@ -39,4 +41,11 @@ class SpreadSheet:
             else:
                 return "#Error"
 
-        return "#Error"
+        try:
+            result = eval(content)
+            if isinstance(result, int):  # Only allow integer results
+                return result
+            else:
+                return "#Error"
+        except (ZeroDivisionError, ValueError, SyntaxError):
+            return "#Error"
