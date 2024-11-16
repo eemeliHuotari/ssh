@@ -18,5 +18,13 @@ class SpreadSheet:
             pass
         if content.startswith("'") and content.endswith("'") and len(content) > 1:
             return content[1:-1]
-
+        if content.startswith("="):
+            formula_content = content[1:]
+            try:
+                return int(formula_content)
+            except ValueError:
+                if formula_content.startswith("'") and formula_content.endswith("'") and len(formula_content) > 1:
+                    return formula_content[1:-1]
+                else:
+                    return "#Error"
         return "#Error"
